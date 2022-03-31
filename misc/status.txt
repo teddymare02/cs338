@@ -1,0 +1,6 @@
+status.txt
+Mary Blanchard
+30 March, 2022
+
+My current plan for using Kali is to use the Olin lab computers. 
+I read through the installation instructions and decided it probably isn't worth the hassle for me personally.
