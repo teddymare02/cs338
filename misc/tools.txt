@@ -1,0 +1,44 @@
+tools.txt
+Mary Blanchard
+Collaborated with Kaitlyn Peterson
+Spring 2022
+
+1. What's your computer's IP address for its current Internet connection?
+    10.133.13.218 found using ifconfig
+    source: class
+    
+2. How can you determine the IP address associated with a given host name?
+    nslookup [hostname]
+    source: https://www.networkworld.com/article/2697039/unix-top-networking-commands-and-what-they-tell-you.html
+
+3. How can you determine the host name(s) associated with a given IP address?
+    nslookup [IP address]
+    source: https://www.networkworld.com/article/2697039/unix-top-networking-commands-and-what-they-tell-you.html
+
+4. How can you copy a file from one computer to another? Or more to the point, if you create a file on the Kali virtual machine and you want to put it someplace where you can save it, like your your account on mantis.mathcs.carleton.edu, how do you go about it from the Kali command-line interface?
+    scp [filename] [username]@[source host]:[destination]
+    source: https://phoenixnap.com/kb/linux-scp-command
+     
+5. How can you tell whether there's a process listening on a given port (e.g. port 80 or port 22) on a given host?
+    netstat -an | grep ':[port number]'
+    source: https://phoenixnap.com/kb/netstat-command
+    
+6. How can you tell which ports have processes listening on them on a given host?
+    netstat -an | grep LISTEN
+    source: https://phoenixnap.com/kb/netstat-command and also discussion with Kaitlyn
+
+7. How can you retrieve and save a given web page (say https://google.com/ or https://carleton.edu/) in a file on your system?
+    curl --request GET [webpage] --output [destinationfilename]
+    source: my brain with the addition of the request option added from Kaitlyn's source (listed below)
+
+8. How can you view the HTTP headers sent back from a specified web server when you request one of its pages?
+    curl -IL --request GET "[link]" --output [filename]
+    source: https://linuxize.com/post/curl-command-examples/
+    The HTTP header sent TO the web server is first (ex: HTTP/2), followed by the HTTP header that is SENT BACK (ex:200).
+
+9. How can you view the HTTP headers that your computer sends to the web server when you do the tasks in the previous two questions?
+    same as above
+    curl -IL --request GET "[link]" --output [filename]
+    source: https://linuxize.com/post/curl-command-examples/
+    The HTTP header sent TO the web server is first (ex: HTTP/2), followed by the HTTP header that is SENT BACK (ex:200).
+    
