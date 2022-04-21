@@ -1,0 +1,113 @@
+Mary Blanchard
+SSH Key Formats Homework
+20 April, 2022
+
+=====Private Key=====
+In the private key, I expect to see an instance of of the ASN.1 type RSAPrivateKey. This type contains a version as well as eight integers which are the numbers used in RSA encryption like we did in class. This includes a modulus, public and private exponents, some prime factors (called prime1 and prime2), exponents derived from the encryption process e.g. d mod (p - 1), and a coefficient. Additionally, there may be optional OtherPrimeInfo.
+
+To decode the private key, I plugged it into Lapo Luchini's ASN.1 decoder at https://lapo.it/asn1js/. I also plugged it into the other two decoders, but I found that Luchini's gave the most straightforward interpretation. By highlighting over different parts of the hex version of the key, I was able to see how the key is given by the type-length-value where the first hex number refers to the type (02 for integer), the next few are the length in bits of the value, and then all of the following hex numbers until the length is reached make up the data, aka the integers in this case. Since the integers are so long, they've been truncated for viewing purposes, both in Luchini's decoder and here in my write-up.
+
+SEQUENCE (9 elem)
+  INTEGER 0
+  INTEGER (3072 bit) 420803397993763335128835295685195032806549375643387208714175189662086…
+  INTEGER 65537
+  INTEGER (3070 bit) 140751503538783985677696545717917517038502965706069716377365981546036…
+  INTEGER (1536 bit) 218008033426885541684188480244943391209975303788361582154899623447112…
+  INTEGER (1536 bit) 193021968676622323625181038592104171122283667141477970256627449596829…
+  INTEGER (1536 bit) 149389242308436498336744441450175668032543157572539638570492808480497…
+  INTEGER (1534 bit) 479779036230248203587927295827605314186185046269233583392657758812937…
+  INTEGER (1534 bit) 513834375013019990562462519802409256152107040424153804900996524189014…
+
+There are nine integers, so I'll number this section 1-9.
+1.  Name: version
+    Value: 0 (this tells us that there will be no optional primes at the end!)
+    Byte Offest: 4. The hex values at this location are 02 01 00, corresponding to the type (02 = integer), length (1 byte), and value (0).
+
+2.  Name: modulus
+    Value: 0x00b96d4353d6e28b268505df7ffd6b95814e384a116cd6f7f622bd5bde50ca97c05fb58120a8f71df2fa28a9adf5fb61b8cf6a5cffe3db1184d0172bf417f450efdd2179833bb31ef2f807c52553a095ac24b6a28267b1eccd8d585d36b2866a899a1b93bf106887b17403318bc962f87d81b597934eadf8baa962db65d9a700274be2e1fa47a2b8129ef75d799b23110007bceeb1cafdf9fd18abc4a288378091671820b29cd3aced6b9c5b0ebcdf558f8ba630aee876420e2be3a02ae2e27e2c55ff8b03f537ff6d57bae8ea97f4cc483e45e57930c032111c98add3613e0ea6828eb717a9d8e6cefcc2e5cd290eb310ba260ea861f740c11e129c40be12fcaf308e8d328248199cff00a7cdefe5b9da5a809ffa6dc8e28ba94c6a0cb42662babdc48545a79488eacf7a30c107acdedd52d033c4f3971a9c6d9b9e6e861e601c2da9fb146cea611d7ee5827100b0515de131ed36d640326d3825c1ea3993b115db9c03b1c7d24781899745ab860c4b140ca4962383a00a1ace4662ac18623565
+    Byte Offset: 7. The hex values here start similarly as before with an 02 to indicate an integer, 82 01 81 to indicate the length of 3072 bits, followed by the value.
+
+3.  Name: publicExponent
+    Value: 0x010001
+    Byte offset: 396. This is another short one, the bytes here are 02 03 01 00 01, once again corresponding to 02 = integer, 03 = length of 3 bytes, and the 01 00 01 corresponding to 0x010001
+
+4.  Name: privateExponent
+    Value: 0x3e05a70c8706d5a677be2428ea7a2ed2c6781b86429290f41a609e36f96d1a5f35643fa1ce0282590085d363a5b084da4d3e7586fe0f0b8812167e143262fd238e22a1435d17a7d57b5316054b389e77aafc0fd5709bd9ea5349e83be0710777a93d6a28f17315582cc6d8aeba18c9a72958b52f8794b76ab037a9cd2285328ef25a1c5e1bd1f8a1f9dc21bf083e2d74862212f11345ea7556e835686c09ac8e761e62e97b7d6e0d27fe6f92b9683675422fbf7ef1b0849dbade737784d65f7f20eaf9c05dde84220cdccaaa924e22c1a442e6fee7779485a375fc8895552a45e4f91193a7396799531382531bccf3918f5f65f58ffac69324c25ebdcbfac4fbfb6745b451b919c625da3399a56c4cc0187ac8fb720edd8ee15a917cba418c4a69e0a2bf0269d52c19bd3c9d0d16be4cb9084279a3ff1f5a1211d9596ef3f78cd980875d259ce0e6c8d69af7732fbe73111ae25c49871401265382bd065dfcbcfa89bc9bb71279e567474d99728261c08466ef36fa292f55bb3e715f68c54061
+    Byte Offset: 401. This integer and the rest of them follow the same structure where they begin with 02 to indicate an integer, a few bytes to indicate the length, followed by the data. To save everyone the redundancy of writing this for the rest of these, I'm only putting the byte offset.
+
+5.  Name: prime1
+    Value: 0x00e78c06f15ba9d1a4440641beb5ecb6b52d1df0c09c0c439eb5e3d238ccc428e6e6e6d016578ff5d1e822013ea0bbf17bfb38ae34dc0aa9f2994bb081aaf7ea6adf23966c4ef5639ed4a2ff7375a5edebdc3557dae2b2e80c9dcd22aa3ffee2532cc47423189418926ec8c18a8aa4a2fb6140a589f654e5015f9d957710548a88f327799f0f523e0c490d86c235b221f3048d7da4393c37153070bb3d4f9d5c9555b439575ca13ff9e2f62084ab70e8ff6b601983329288b5ef011212dd88ae5d
+    Byte offset: 789
+
+6.  Name: prime2
+    Value: 0x00cd025b67a24ac88a2783901d3d1a3551962a61cc70b46610ad6949a14ee9561dca678f68d419a87237bc4315dbf36c02172546e34efc4a38aba5e9838db8a5a6604e002220871e082a9e6299c90b17259cbaa6fbbcb709d5355bd04f270a0de03c7ed9d7a6f1aeac4f88a3546964441c3fdd2ce19c191309211f503372b061a295bc7a748c6391239e4d3056ef70495572f749b5ac435d8b454772a591290939602a1c1b91e126749701e0be43064e7c4edf31981d32ffa928fb6e435e8de2a9
+    Byte offset: 985
+
+7.  Name: exponent1
+    Value: 0x009eaab0b341b9dbe3b18d8c0dd082762d2ece7e84ae2a254823a20b134b15fc6545c2d2c30c9ba4ba835491ffc58b248e6df7484106abf40b3f0ac3d8073d3d90a079b5816095fcff00fcf509bc8bc8bec036798e8f9c43312a0d40fce33f98fda006bb02b5bbfe1e91f5d5d246f14c91eff1a9be2163c94da8a4c6a0413b7d771d1066e21d50a11e300d29d3f991a87bec19bd08050483466cdc43225f6518e5684648a8d9dbd1883e03a502e4ac49ad8579e3e1a88d0b4b888cf642a136212d
+    Byte offset: 1181
+
+8.  Name: exponent2
+    Value: 0x32f51d073b7ddf2f07f759c10ac912ebbea9b6397ce23a6476d62ee91b9640439365fe6d8e1afa95b968e03bf4ba22e4ba2017e8b45f5d8b8c8ee6e63e39e162e3993fcb3bce9a16699188ecb4de3ed8a88674af2a0f4d3063dcf8805431d9951d3462ad89df950d5b8f99198840d5f537a2a05f4bcfa7bda330075d626a993a3281f0e63b671c52802cab91505ed6bb98a202fe575d3f4938e5338817f6dd4617b31fdd727b4675c07b4503c5e1316d10a5c5cc0ba5fb8a6e9760a6fa3fc651
+    Byte offset: 1377
+
+9.  Name: coefficient
+    Value: 0x3693128da37982dd03d4cc94b7e13d95dd8fa9fc7fe62e37db6327dc1b7353ef4fbc62d435721c173855550724e9c2cc682a45dc09527668ffcb8ccbc5da1992196a8d122497e44a2f4a294ed72fb248059ad9a8c19a705b3d1076d705466e75955985a85ddf0b2a643bfeb1bb910a739a12d6340b37f12193be47eb2abe2f21bdb7bcf929d698aa738ba323387e2fea52fc67553602cbf60b45a170ef19537397f63dd0d5f425d37b8d04a65302e34b8b6e82530001646e70186331120ed297
+    Byte offset: 1572
+
+
+
+=====Public Key=====
+In my public key, I expect to see an instance of the ASN.1 type RSAPublicKey, which is a sequence that contains two integers: a modulus, and a public exponent. It should also include an indication of what type of encoding was used, most commonly ssh-rsa.
+
+In order to decode my public key, I tried plugging it into Luchini's decoder again, but this did not work. When I put the key in a standard base64 decoder, I could see the ssh-rsa encoding specification, but everything else came out as gibberish. I got a little stuck here, and unfortunately I don't really have more time to dedicate to this assignment. :(
+
+
+
+=====Sanity Check=====
+Because I was unable to decode my public key properly, I can't perform the actual operations to prove that these keys line up. However, if I had been able to do it, I could perform the sanity check by encrypting a message with the public key and decrypting it with the private key, or by showing that any number taken to the power of the public exponent times the private exponent mod modulus would result in the original number back (since this is the process of encoding/decoding).
+
+
+
+Public Key:
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC5bUNT1uKLJoUF33/9a5WBTjhKEWzW9/YivVveUMqXwF+1gSCo9x3y+iiprfX7YbjPalz/49sRhNAXK/QX9FDv3SF5gzuzHvL4B8UlU6CVrCS2ooJnsezNjVhdNrKGaomaG5O/EGiHsXQDMYvJYvh9gbWXk06t+LqpYttl2acAJ0vi4fpHorgSnvddeZsjEQAHvO6xyv35/RirxKKIN4CRZxggspzTrO1rnFsOvN9Vj4umMK7odkIOK+OgKuLifixV/4sD9Tf/bVe66OqX9MxIPkXleTDAMhEcmK3TYT4OpoKOtxep2ObO/MLlzSkOsxC6Jg6oYfdAwR4SnEC+EvyvMI6NMoJIGZz/AKfN7+W52lqAn/ptyOKLqUxqDLQmYrq9xIVFp5SI6s96MMEHrN7dUtAzxPOXGpxtm55uhh5gHC2p+xRs6mEdfuWCcQCwUV3hMe021kAybTglweo5k7EV25wDscfSR4GJl0WrhgxLFAykliODoAoazkZirBhiNWU= blancmar@Marys-MacBook-Air.local
+
+-----BEGIN RSA PRIVATE KEY-----
+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
+-----END RSA PRIVATE KEY-----
