@@ -1,1 +1,68 @@
-test?
+summary.txt
+Mary Blanchard and Kaitlyn Peterson
+
+Part 1
+Total time: 36.813254833221436 s
+Number of hashes computed: 267751
+Passwords cracked: 2805
+Time per hash computed: 2.4295808751146486e-06
+Time per password cracked: 7.046131739216905e-05
+Passwords cracked per number of hashes computed: 0.010476151349574792
+
+
+Part 2 (list) (attempt ??/many list attempts)
+Total time: 23745.213257074356 s (7h)
+Number of hashes computed: 160650600
+Passwords cracked: 7
+Time per hash computed: 2.561907619467376e-06
+Time per password cracked: 0.00010487011500767299
+Passwords cracked per number of hashes computed: 4.35728220124917e-08
+
+This set of attempts was performed using a list of user objects, which turned out to be extremely inefficient. This attempt was used for timing analysis since it was still the most complete attempt.
+
+
+Part 2 (dict) (attempt 2)
+Total time: 1433.3055732250214 s
+Number of hashes computed: 8032530
+Passwords cracked: 1
+Time per hash computed: 4.226222402409209e-06
+Time per password cracked: 1.7881393432617188e-05
+Passwords cracked per number of hashes computed: 1.2449377717854773e-07
+
+This attempt switched to a dictionary of username/hashed password pairs for comparison, but we did not see much improvement in the time running it.
+
+
+Part 2 (sets) (attempt 3)
+my computer crashed :(
+This attempt involved further overhauling the code for efficiency, including removing some of the timing elements and storing the words as a set instead of as a list. Unfortunately, my computer crashed while running it and we don't have stats for it.
+
+
+Part 3
+Total time: 695.2793190479279 s
+Number of hashes computed: 373448547
+Passwords cracked: 2805
+Time per hash computed: 1.6349772740985834e-06
+Time per password cracked: 2.0944285945246352e-06
+Passwords cracked per number of hashes computed: 7.511074879078322e-06
+
+
+Analysis
+- Did your time per hash computed change between phases? By what factor? Why?
+  Our time per hash computed did change between phases, but all of the average hash computation times were on the order of microseconds and were within one microsecond of each other. We were surprised to see that phase 1 did not have the shortest computation time despite having the shortest initial string before hashing. Unsurprisingly, phase 2 did have the longest average time per hash.
+
+- Did your time per password crack change between phases? By what factor? Why?
+  Phase 3 had the shortest time per password cracked by several orders of magnitude. We think this has to do with the order of the for-loops. For each hash calculated, only one comparison is made whereas in our other functions each hash is compared to a few thousand passwords. This made phase 1 35 times slower than phase 3, and phase 2 was more than 50 times slower when we were using lists. This improved to only being 9 times slower when we switched to dictionaries.
+
+- Suppose you wanted to precompute all the hashes for each possible password
+so you could just look up the password in a table indexed by the hash. How much
+memory would be required for each phase?
+  Each phase requires 16+32+32=80 bytes of storage for each hash/password pair. Multiply this by the number of possible passwords to get total storage needed.
+  Phase 1: 80 * (#ofwords) = 21,420,080 bytes or a little over 20 megabytes
+  Phase 2: 80 * (#ofwords)^2 = 5,735,247,840,080 bytes or a little over 5 terabytes
+  Phase 3: 80 * (possible salts = 16^8) * (#ofwords) = 9.19e16 bytes or nearly 82 petabytes
+
+- Give 3-4 reasons we should store password hashes and not the passwords themselves. Think in terms of threats, who the attackers might be, etc.
+  1. If you store passwords in plaintext, the hacker only needs to get access to the storage location to gain access to all of the accounts. If they're stored as hashes, an attacker can not work backwards to discover the password.
+  2. If you store passwords as plaintext, they're likely being sent over the network as plaintext or encrypted plaintext, making them much more susceptible to Eve or Mal.
+  3. Attackers are not the only ones with access to the password storage. Storing as hashes prevents those with admin access from misusing their privileges without significant effort and protects the privacy of their users.
+  4. Storing passwords as hashes creates uniform password storage requirements instead of having them be variable length.
