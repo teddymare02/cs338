@@ -1,3 +1,6 @@
+# Password Cracker
+# Mary Blanchard and Kaitlyn Peterson
+# CS 251, May 2022
 
 import hashlib
 import binascii
